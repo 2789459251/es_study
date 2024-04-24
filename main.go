@@ -1,11 +1,11 @@
 package main
 
 import (
+	"es_study/index"
 	"es_study/utils"
-	"fmt"
 )
 
 func main() {
 	utils.EsConnect()
-	fmt.Println(utils.Client)
+	index.CreateIndex()
 }
