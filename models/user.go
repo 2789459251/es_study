@@ -9,6 +9,9 @@ type User struct {
 	CreatedAt time.Time `jsom:"created_at"`
 }
 
+func (u User) Index() string {
+	return "user_index"
+}
 func (u User) Mapping() string {
 	return `{
 			"mappings":{
