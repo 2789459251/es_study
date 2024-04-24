@@ -54,19 +54,19 @@ func DeleteDocs() {
 func CreateDocs() {
 	userList := []models.User{
 		{
-			ID:        10,
+			ID:        19,
 			Name:      "Zy",
 			Nickname:  "asdfghjkl;",
 			CreatedAt: time.Now(),
 		},
 		{
-			ID:        11,
+			ID:        120,
 			Name:      "Sy",
 			Nickname:  "qwertyuio",
 			CreatedAt: time.Now(),
 		},
 		{
-			ID:        12,
+			ID:        21,
 			Name:      "Qz",
 			Nickname:  "zxcbnm,",
 			CreatedAt: time.Now(),
@@ -83,4 +83,50 @@ func CreateDocs() {
 		return
 	}
 	fmt.Println(res.Succeeded())
+}
+
+func FindDoc() {
+	limit := 2
+	page := 4
+	from := (page - 1) * limit
+	query := elastic.NewBoolQuery()
+	reslist, err := utils.Client.Search(models.User{}.Index()).Query(query).From(from).Size(limit).Do(context.Background())
+	if err != nil {
+		fmt.Println("查询文档列表错误：", err)
+		return
+	}
+	count := reslist.Hits.TotalHits.Value
+	fmt.Println("查到的数量：", count)
+	for _, hit := range reslist.Hits.Hits {
+		fmt.Println(string(hit.Source))
+	}
+}
+
+// 精确匹配是指keyword来匹配
+func FindDocExact() {
+	limit := 2
+	page := 1
+	from := (page - 1) * limit
+	query := elastic.NewTermQuery("Nickname.keyword", "Zy爱吃蘑菇和鸡蛋")
+	reslist, err := utils.Client.Search(models.User{}.Index()).Query(query).From(from).Size(limit).Do(context.Background())
+	if err != nil {
+		fmt.Println("查询文档列表错误：", err)
+		return
+	}
+	count := reslist.Hits.TotalHits.Value
+	fmt.Println("查到的数量：", count)
+	for _, hit := range reslist.Hits.Hits {
+		fmt.Println(string(hit.Source))
+	}
+}
+
+func UpdateDoc() {
+	updateRes, err := utils.Client.Update().Index(models.User{}.Index()).Id("ZLUeD48BsTBsV_jmurI9").Doc(map[string]interface{}{
+		"Name": "ty",
+	}).Do(context.Background())
+	if err != nil {
+		fmt.Println("更新文档错误：", err)
+		return
+	}
+	fmt.Println(updateRes)
 }

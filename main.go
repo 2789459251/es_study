@@ -8,5 +8,7 @@ import (
 func main() {
 	utils.EsConnect()
 	//doc.CreateDoc()
-	doc.CreateDocs()
+	//doc.CreateDocs()
+	//doc.FindDocExact()
+	doc.UpdateDoc()
 }
